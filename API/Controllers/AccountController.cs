@@ -47,7 +47,8 @@ public class AccountController : BaseApiController
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
-        var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == loginDto.Username);
+        var user = await _context.Users
+            .SingleOrDefaultAsync(x => x.Username == loginDto.Username);
 
         if (user == null)
             return Unauthorized("You have no rights here, get lost");
@@ -70,7 +71,7 @@ public class AccountController : BaseApiController
             Token = _tokenServices.CreateToken(user)
         };
     }
-
+    
     private async Task<bool> UserExist(string username)
     {
         return await _context.Users.AnyAsync(x => x.Username == username.ToLower());

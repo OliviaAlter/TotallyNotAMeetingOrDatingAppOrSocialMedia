@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using API.Entities;
 using API.Interfaces;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
@@ -21,7 +20,7 @@ public class TokenServices :ITokenServices
     {
         var claims = new List<Claim>()
         {
-            new Claim(JwtRegisteredClaimNames.NameId, user.Username)
+            new(JwtRegisteredClaimNames.NameId, user.Username)
         };
         var credential = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha512Signature);
 
