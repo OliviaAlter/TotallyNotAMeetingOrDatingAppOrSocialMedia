@@ -1,5 +1,6 @@
 using System.Text;
 using API.Data;
+using API.Extensions;
 using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,25 +20,10 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddScoped<ITokenServices, TokenServices>();
-        services.AddDbContext<DataContext>(options =>
-        {
-            options.UseMySql(_configuration.GetConnectionString("TotallyNotAConnectionStringOverHere"),
-                new MySqlServerVersion(new Version(8, 0, 27)));
-        });
+        services.AddApplicationServices(_configuration);
         services.AddControllers();
         services.AddCors();
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("_configuration")),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+        services.AddIdentityServices(_configuration);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
